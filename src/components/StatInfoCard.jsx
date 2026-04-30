@@ -1,12 +1,28 @@
 import React from 'react'
+import Counter from './3d/Counter'
 
-const StatInfoCard = ({count, label}) => {
+const StatInfoCard = ({ count, label, index = 0 }) => {
+  const num = String(index + 1).padStart(2, '0')
+
   return (
-    <div className='flex-1 flex gap-3 md:gap-5 bg-gradient-to-b from-[#d7c690] to-[#afc894] rounded-[14px] p-5'>
-        <h4 className='text-4xl md:text-5xl font-medium text-[#f92c62]'>{count}</h4>
-        <p className='text-sm md:text-[16px] font-normal text-[#591fe0] leading-6 whitespace-pre-line'>{label}</p>
+    <div className="group relative pl-5">
+      <div className="absolute left-0 top-2 bottom-2 w-px bg-border group-hover:bg-primary transition-colors duration-500" />
+
+      <div className="text-[10px] tracking-[0.22em] uppercase text-muted/60 font-mono mb-3">
+        / {num}
+      </div>
+
+      <div className="font-serif text-5xl md:text-6xl font-medium text-ink leading-none tracking-tighter">
+        <Counter value={count} duration={2} />
+      </div>
+
+      <p className="text-[11px] md:text-xs uppercase tracking-[0.18em] text-muted leading-relaxed whitespace-pre-line mt-3">
+        {label}
+      </p>
+
+      <div className="mt-5 h-px w-10 bg-primary/40 group-hover:w-20 group-hover:bg-primary transition-all duration-500" />
     </div>
   )
 }
 
-export default StatInfoCard;
+export default StatInfoCard

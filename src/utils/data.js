@@ -4,11 +4,11 @@ import { GiArtificialIntelligence } from "react-icons/gi";
 import { FaRobot } from "react-icons/fa";
 import { GiRobotGolem } from "react-icons/gi";
 import { FcScatterPlot } from "react-icons/fc";
-import { TbFileTypeSql } from "react-icons/tb";
+import { TbFileTypeSql, TbDatabase } from "react-icons/tb";
 import { IoLogoHtml5 } from "react-icons/io5";
 import { FaCss3Alt } from "react-icons/fa";
 import { IoLogoReact } from "react-icons/io5";
-import { SiTableau } from "react-icons/si";
+import { SiTableau, SiSap } from "react-icons/si";
 import { GrBusinessService } from "react-icons/gr";
 import { FaNetworkWired } from "react-icons/fa";
 import { SiDatadog } from "react-icons/si";
@@ -16,6 +16,7 @@ import { MdHistoryEdu } from "react-icons/md";
 import { SiCredly } from "react-icons/si";
 import { FaSquareGithub } from "react-icons/fa6";
 import { SiKaggle } from "react-icons/si";
+import { BsCodeSlash, BsBarChartFill, BsBrowserChrome } from "react-icons/bs";
 
 import PROJECT_IMG_1 from "../assets/images/project_1.png"; 
 import PROJECT_IMG_2 from "../assets/images/project_2.png"; 
@@ -40,13 +41,13 @@ import CERTFICATE_10 from "../assets/CERTIFICATE/CERT_10.png";
 
 
 export const MENU_LINKS = [
-        { id: "01", label: "Home", offset: -100, to: "hero" }, 
-        { id: "02", label: "Skills", offset: -80, to: "skills"}, 
-        { id: "03", label: "About Me", offset: -80, to: "about" }, 
-        { id: "04", label: "Projects", offset: -80, to: "projects"},
-        { id: "05", label: "Contact", offset: -80, to: "contact"},
-        { id: "06", label: "Certificates", offset: -80, to: "certificate"},
-    ]; 
+        { id: "01", label: "Home", offset: -100, to: "hero" },
+        { id: "02", label: "About", offset: -80, to: "about" },
+        { id: "03", label: "Skills", offset: -80, to: "skills" },
+        { id: "04", label: "Projects", offset: -80, to: "projects" },
+        { id: "05", label: "Certificates", offset: -80, to: "certificate" },
+        { id: "06", label: "Contact", offset: -80, to: "contact" },
+    ];
     
 export const STATS = [
         {id: "01", count :"2024", label: 'Year of \nPassout'},
@@ -55,13 +56,14 @@ export const STATS = [
         {id: "04", count: "15+", label: 'Skill \nlearned'},
     ]; 
         
-export const SKILL_TABS = [ 
+export const SKILL_TABS = [
         { id: "01", label: "All", value: "all" },
         { id: "02", label: "Data Science", value: "data_science"},
-        { id: "03", label: "Web Development", value: "web devlopment" }, 
-        { id: "04", label: "Tools", value: "tools" }, 
-        { id: "05", label: "Soft-Skills", value: "soft-skills" }, 
-    ]; 
+        { id: "03", label: "SAP", value: "sap"},
+        { id: "04", label: "Web Development", value: "web devlopment" },
+        { id: "05", label: "Tools", value: "tools" },
+        { id: "06", label: "Soft-Skills", value: "soft-skills" },
+    ];
 
 export const SKILLS = [
     {
@@ -168,28 +170,69 @@ export const SKILLS = [
         type: "soft-skills", 
         description: "Coursera Business Intelligence cerified in the Context Understanding and storys of data"
     },
-    {  
-        id: "14", 
-        icon:  MdHistoryEdu, 
-        skil: "Data Story Telling", 
-        progress: 90, 
-        type: "soft-skills", 
+    {
+        id: "14",
+        icon:  MdHistoryEdu,
+        skil: "Data Story Telling",
+        progress: 90,
+        type: "soft-skills",
         description: "Coursera Business Intelligence and Data analytics certified in the Context Understanding and storytelling of data"
+    },
+    {
+        id: "15",
+        icon: SiSap,
+        skil: "SAP HANA / S/4HANA",
+        progress: 75,
+        type: "sap",
+        description: "Hands-on with SAP HANA in-memory database and S/4HANA — built a natural-language chatbot that translates user prompts into SQL/CDS queries against live HANA data."
+    },
+    {
+        id: "16",
+        icon: BsBarChartFill,
+        skil: "SAP Analytics Cloud (SAC)",
+        progress: 70,
+        type: "sap",
+        description: "Built dashboards and stories in SAC — connecting HANA models, planning data, and predictive scenarios for business reporting."
+    },
+    {
+        id: "17",
+        icon: BsCodeSlash,
+        skil: "ABAP / ABSL",
+        progress: 65,
+        type: "sap",
+        description: "Backend logic in SAP Business ByDesign using ABSL and ABAP — built custom plant-maintenance modules end-to-end."
+    },
+    {
+        id: "18",
+        icon: TbDatabase,
+        skil: "CDS Views & OData",
+        progress: 70,
+        type: "sap",
+        description: "Modeled CDS views with annotations and joins, exposed as OData services for consumption by Fiori apps and analytical clients."
+    },
+    {
+        id: "19",
+        icon: BsBrowserChrome,
+        skil: "SAP Fiori / UI5",
+        progress: 65,
+        type: "sap",
+        description: "Built Fiori apps in SAPUI5 with custom controls, OData binding, and consistent SAP design-system theming."
     },
 
 ];
 
 export const ABOUT_ME = { 
-    content: "As a Bachler of Technology Graduate in Computer Science and Engineering of Shri Vaishnav Vidyapeeth Vishwavidyalaya, Indore, Madhya Pradesh. I am eager to fully utilize my skill of quick comprehension, diligent work ethic, and effective communication to contribute to organizational goals. I am committed to learning and growing within a dynamic where I can apply my skills to complete tasks efficiently, develop innovative solutions, and make a meaningful impact.",
+    content: "Computer Science graduate from Shri Vaishnav Vidyapeeth Vishwavidyalaya, Indore — currently a full-time AI / ML Engineer at iMark 360 LLP, Ahmedabad, where I design and develop production-grade AI systems for real business workflows.\n\nRecent work includes a SAP HANA database chatbot that translates natural language into SQL, a fully offline document-processing AI for confidential data, and a full-stack plant-maintenance platform with predictive scheduling.\n\nI believe an intelligent system is only as strong as the engineering around it — reliability, security, and a clean interface are what turn a model into something a team can actually depend on.",
     socialLinks: [
         { id: "01", label: "Kaggle", icon: SiKaggle, link: "https://www.kaggle.com/jatinpidugu" },
         { id: "02", label: "Github", icon: FaSquareGithub, link: "https://github.com/Jatinpidugu"},
         { id: "03", label: "Credly", icon: SiCredly, link: "https://www.credly.com/users/jatin-pidugu" }, 
         { id: "04", label: "Linkedln", icon: FaLinkedin, link: "https://www.linkedin.com/in/jatin-pidugu-857b82218" }, 
     ],
-    email: "jatinpidugu@gmail.com", 
-    phone: "+91 7988989479", 
-    LinkedIn: "jatin pidugu", 
+    email: "jatinpidugu@gmail.com",
+    phone: "+91 7988989479",
+    LinkedIn: "jatin pidugu",
+    experienceStartDate: "2024-01-01",
 };
 
 export const PROJECTS = [
@@ -197,38 +240,57 @@ export const PROJECTS = [
         id: 1,
         title: "Sign Language Real-time Detection using Media-pipe",
         image: PROJECT_IMG_1,
-        tag: ["Tkinter", "Media-pipe", "Mediapipe","CNN","TensorFlow","Python","Pytextspeech"]
+        tag: ["Tkinter", "Media-pipe", "Mediapipe","CNN","TensorFlow","Python","Pytextspeech"],
+        link: "https://github.com/Jatinpidugu/sign-language-detection",
+        type: "data_science"
     },
     {
         id: 2,
         title: "Personal Portfolio using React+vite",
         image: PROJECT_IMG_2,
-        tag: ["React", "VITE", "Taiwind","CSS","Javascipt"]
+        tag: ["React", "VITE", "Taiwind","CSS","Javascipt"],
+        link: "https://github.com/Jatinpidugu/jatin-pidugu-portfolio",
+        type: "web_devlopment"
     },
     {
         id: 3,
         title: "Data Science and Analytics Projects",
         image: PROJECT_IMG_3,
-        tag: ["Pandas","Python", "Sci-kit Learn", "MatplotLib","Numpy","SQL"]
+        tag: ["Pandas","Python", "Sci-kit Learn", "MatplotLib","Numpy","SQL"],
+        link: "https://github.com/Jatinpidugu/data-science-projects",
+        type: "data_science"
     },
     {
         id: 4,
         title: "SQL Connectivity and DATA Manipulation in EDA",
         image: PROJECT_IMG_4,
-        tag: ["EDA", "STATs-Model", "Connectivity","Query management"]
+        tag: ["EDA", "STATs-Model", "Connectivity","Query management"],
+        link: "https://github.com/Jatinpidugu/sql-eda",
+        type: "data_science"
     },
     {
         id: 5,
         title: "Power-BI Projects using EXCEL, CSV Files",
         image: PROJECT_IMG_5,
-        tag: ["Power-BI", "DAX", "DATA Cleaning", "Visualization of Data","Data Relation Management"]
+        tag: ["Power-BI", "DAX", "DATA Cleaning", "Visualization of Data","Data Relation Management"],
+        link: "https://github.com/Jatinpidugu/powerbi-projects",
+        type: "tools"
     },
     {
         id: 6,
         title: "Voting Site Frontend",
         image: PROJECT_IMG_6,
-        tag: ["HTML", "CSS", "Flask", "Python", "SQL","EXCEL"]
+        tag: ["HTML", "CSS", "Flask", "Python", "SQL","EXCEL"],
+        link: "https://github.com/Jatinpidugu/voting-site",
+        type: "web_devlopment"
     },
+];
+
+export const PROJECT_TABS = [
+    { id: "01", label: "All", value: "all" },
+    { id: "02", label: "Data Science", value: "data_science" },
+    { id: "03", label: "Web Development", value: "web_devlopment" },
+    { id: "04", label: "Tools", value: "tools" },
 ];
 
 export const MY_CERTIFICATES = [

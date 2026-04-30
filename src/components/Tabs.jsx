@@ -1,34 +1,31 @@
 import React from 'react'
-import { getActiveLink } from 'react-scroll/modules/mixins/scroller'
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'
 
-const Tabs = ({tabList, activeTab, onChange}) => {
-    const getActiveStyles = (value) =>{
-      return activeTab === value
-      ? "text-white bg-[#7cbf78]"
-      : "text-#b56141 bg-transparent";
-    };
+const Tabs = ({ tabList, activeTab, onChange }) => {
   return (
-    <div className="flex items-center justify-center my-10">
-      <div className="bg-[#fff6eb] rounded-full flex">
-        {tabList.map((tab) => (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {tabList.map((tab) => {
+        const active = activeTab === tab.value
+        return (
           <motion.button
             key={tab.id}
-            initial={{opacity:0.8, scale: 1}}
-            animate={{
-              opacity: activeTab === tab.value ? 1: 0.8,
-              scale: activeTab === tab.value ? 1.05 : 1,
-            }}
-            transition={{duration:0.2}}
-            className={`text-xs md:text-[15px] ${getActiveStyles(tab.value)} rounded-full px-4  md:px-10 py-[6px] md:py-3`}
+            whileTap={{ scale: 0.96 }}
             onClick={() => onChange(tab.value)}
+            className={`relative inline-flex items-center gap-2 font-mono text-[11px] md:text-xs uppercase tracking-[0.16em] px-4 py-2 rounded-full border transition-colors ${
+              active
+                ? 'bg-ink text-background border-ink'
+                : 'bg-white border-border text-muted hover:text-ink hover:border-ink/40'
+            }`}
           >
-            {tab.label}
+            <span className={active ? 'text-primary' : 'text-muted/40'}>
+              {active ? '●' : '○'}
+            </span>
+            <span>{tab.label}</span>
           </motion.button>
-        ))} 
-      </div>
+        )
+      })}
     </div>
-  );
-};
+  )
+}
 
-export default Tabs;
+export default Tabs
