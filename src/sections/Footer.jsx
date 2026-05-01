@@ -12,12 +12,37 @@ const useNowTicker = () => {
   return now
 }
 
+// abacus.jasoncameron.dev — free public hit counter, no auth.
+// We bump the count once per browser session (sessionStorage gate)
+// so refreshes don't inflate; subsequent reads are GET-only.
+const COUNTER_HIT_URL = 'https://abacus.jasoncameron.dev/hit/jatin-pidugu-portfolio/views'
+const COUNTER_GET_URL = 'https://abacus.jasoncameron.dev/get/jatin-pidugu-portfolio/views'
+
+const useViewCounter = () => {
+  const [views, setViews] = useState(null)
+  useEffect(() => {
+    const counted = sessionStorage.getItem('view_counted') === '1'
+    const url = counted ? COUNTER_GET_URL : COUNTER_HIT_URL
+    fetch(url)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && typeof d.value === 'number') {
+          setViews(d.value)
+          if (!counted) sessionStorage.setItem('view_counted', '1')
+        }
+      })
+      .catch(() => {})
+  }, [])
+  return views
+}
+
 const formatTime = (d) =>
   d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
 const Footer = () => {
   const { menuLinks = [], aboutMe } = usePortfolioData()
   const now = useNowTicker()
+  const views = useViewCounter()
 
   const channels = [
     { label: 'email', value: aboutMe?.email, href: `mailto:${aboutMe?.email}` },
@@ -60,6 +85,12 @@ const Footer = () => {
           <span className="tabular-nums">{formatTime(now)}</span>
           <span className="text-background/30">·</span>
           <span>uptime ∞</span>
+          {views !== null && (
+            <>
+              <span className="text-background/30">·</span>
+              <span className="tabular-nums">visits {views.toLocaleString()}</span>
+            </>
+          )}
           <span className="text-background/30">·</span>
           <span className="inline-flex items-center gap-1.5 text-primary">
             <span className="relative flex h-1.5 w-1.5">

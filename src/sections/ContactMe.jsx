@@ -1,6 +1,11 @@
 import React, { useState, useRef } from 'react'
 import { usePortfolioData } from '../context/DataContext'
 import axios from 'axios'
+
+// Web3Forms — free email-relay form service. The access key is bound to
+// the inbox you registered at https://web3forms.com — submissions arrive
+// as email there. Public key, safe to ship in client code.
+const WEB3FORMS_ACCESS_KEY = '1887dae6-b00b-443d-93f2-711c1a6a5a00'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { HiOutlineMail, HiOutlinePhone, HiOutlineDuplicate } from 'react-icons/hi'
 import { FaLinkedin } from 'react-icons/fa'
@@ -26,10 +31,15 @@ const ContactMe = () => {
     }
     setStatus('sending')
     try {
-      await axios.post(
-        'https://api.sheetbest.com/sheets/f1bf133f-9f86-410a-be02-2a8726c910aa',
-        { Name: name, Email: email, Message: message }
-      )
+      const { data } = await axios.post('https://api.web3forms.com/submit', {
+        access_key: WEB3FORMS_ACCESS_KEY,
+        name,
+        email,
+        message,
+        subject: `Portfolio contact from ${name}`,
+        from_name: 'Jatin Pidugu Portfolio',
+      })
+      if (!data?.success) throw new Error(data?.message || 'submit failed')
       setStatus('sent')
       setName(''); setEmail(''); setMessage('')
       setTimeout(() => setStatus('idle'), 3500)
