@@ -41,7 +41,7 @@ const Hero = () => {
   const resetMouse = () => { mx.set(0); my.set(0) }
 
   const goToprofile = () => { window.location.href = 'https://www.linkedin.com/in/jatin-pidugu-857b82218' }
-  const goToresume = () => { window.location.href = 'https://drive.google.com/file/d/1l3vOU7rebaSYg589eb8YJe9v4ufZsFTr/view?usp=sharing' }
+  const goToresume = () => { window.location.href = 'https://drive.google.com/file/d/1kuKFyorOOM0kMPLPHRlbJKFEpkARPhTu/view?usp=drive_link' }
 
   return (
     <section ref={ref} id="hero" className="relative overflow-x-clip bg-background min-h-screen select-none">
