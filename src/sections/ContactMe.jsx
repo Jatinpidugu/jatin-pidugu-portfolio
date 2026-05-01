@@ -16,7 +16,8 @@ const ContactMe = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
-  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [status, setStatus] = useState('idle') // idle | sending | sent | invalid | failed
+  const [errorDetail, setErrorDetail] = useState('')
   const [copiedKey, setCopiedKey] = useState(null)
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
@@ -25,8 +26,9 @@ const ContactMe = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!message.trim() || !name.trim() || !email.trim()) {
-      setStatus('error')
-      setTimeout(() => setStatus('idle'), 2000)
+      setStatus('invalid')
+      setErrorDetail('')
+      setTimeout(() => setStatus('idle'), 2500)
       return
     }
     setStatus('sending')
@@ -41,11 +43,15 @@ const ContactMe = () => {
       })
       if (!data?.success) throw new Error(data?.message || 'submit failed')
       setStatus('sent')
+      setErrorDetail('')
       setName(''); setEmail(''); setMessage('')
       setTimeout(() => setStatus('idle'), 3500)
     } catch (err) {
-      setStatus('error')
-      setTimeout(() => setStatus('idle'), 2500)
+      const detail = err?.response?.data?.message || err?.message || 'unknown error'
+      console.error('Web3Forms submit failed:', err?.response?.data || err)
+      setStatus('failed')
+      setErrorDetail(detail)
+      setTimeout(() => { setStatus('idle'); setErrorDetail('') }, 6000)
     }
   }
 
@@ -225,7 +231,7 @@ const ContactMe = () => {
                 <span className={`flex items-center gap-1.5 ${
                   status === 'sending' ? 'text-muted' :
                   status === 'sent' ? 'text-primary' :
-                  status === 'error' ? 'text-secondary' : 'text-muted/50'
+                  status === 'invalid' || status === 'failed' ? 'text-secondary' : 'text-muted/50'
                 }`}>
                   <span className={`relative flex h-1.5 w-1.5`}>
                     {status === 'sending' && (
@@ -234,17 +240,23 @@ const ContactMe = () => {
                     <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${
                       status === 'sending' ? 'bg-muted' :
                       status === 'sent' ? 'bg-primary' :
-                      status === 'error' ? 'bg-secondary' : 'bg-muted/40'
+                      status === 'invalid' || status === 'failed' ? 'bg-secondary' : 'bg-muted/40'
                     }`} />
                   </span>
                   <span>
                     {status === 'sending' && 'sending…'}
                     {status === 'sent' && 'message sent'}
-                    {status === 'error' && 'check fields'}
+                    {status === 'invalid' && 'fill all fields'}
+                    {status === 'failed' && 'send failed'}
                     {status === 'idle' && 'draft'}
                   </span>
                 </span>
               </div>
+              {status === 'failed' && errorDetail && (
+                <div className="px-5 md:px-6 py-2 border-b border-border bg-secondary/10 text-[10px] text-secondary font-mono break-all">
+                  {errorDetail}
+                </div>
+              )}
 
               <form className="p-5 md:p-6 space-y-4" autoComplete="off" onSubmit={handleSubmit}>
                 {/* name */}
