@@ -1,15 +1,25 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { usePortfolioData } from '../context/DataContext'
 import axios from 'axios'
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import { HiOutlineMail, HiOutlinePhone, HiOutlineDuplicate } from 'react-icons/hi'
+import { FaLinkedin } from 'react-icons/fa'
+import { HiArrowUpRight, HiCheck } from 'react-icons/hi2'
 
 // Web3Forms — free email-relay form service. The access key is bound to
 // the inbox you registered at https://web3forms.com — submissions arrive
 // as email there. Public key, safe to ship in client code.
 const WEB3FORMS_ACCESS_KEY = '1887dae6-b00b-443d-93f2-711c1a6a5a00'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { HiOutlineMail, HiOutlinePhone, HiOutlineDuplicate } from 'react-icons/hi'
-import { FaLinkedin } from 'react-icons/fa'
-import { HiArrowUpRight, HiCheck } from 'react-icons/hi2'
+
+// Pipeline log shown during 'sending' — pure flavor, mimics an inference run.
+const PIPELINE_STEPS = [
+  'parse_input',
+  'tokenize_payload',
+  'embed_message',
+  'route_via_relay',
+  'deliver_to_inbox',
+]
+const SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
 
 const ContactMe = () => {
   const { aboutMe } = usePortfolioData()
@@ -19,9 +29,32 @@ const ContactMe = () => {
   const [status, setStatus] = useState('idle') // idle | sending | sent | invalid | failed
   const [errorDetail, setErrorDetail] = useState('')
   const [copiedKey, setCopiedKey] = useState(null)
+  const [stepIndex, setStepIndex] = useState(0)
+  const [spinnerFrame, setSpinnerFrame] = useState(0)
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const blobY = useTransform(scrollYProgress, [0, 1], [60, -60])
+
+  // pipeline animation while sending — advances every ~650ms, halts at last step
+  useEffect(() => {
+    if (status !== 'sending') {
+      setStepIndex(0)
+      return
+    }
+    const id = setInterval(() => {
+      setStepIndex((i) => (i < PIPELINE_STEPS.length - 1 ? i + 1 : i))
+    }, 650)
+    return () => clearInterval(id)
+  }, [status])
+
+  // braille spinner cycle — fast tick for the active step
+  useEffect(() => {
+    if (status !== 'sending') return
+    const id = setInterval(() => {
+      setSpinnerFrame((f) => (f + 1) % SPINNER_FRAMES.length)
+    }, 80)
+    return () => clearInterval(id)
+  }, [status])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -258,6 +291,7 @@ const ContactMe = () => {
                 </div>
               )}
 
+              <div className="relative">
               <form className="p-5 md:p-6 space-y-4" autoComplete="off" onSubmit={handleSubmit}>
                 {/* name */}
                 <div>
@@ -321,6 +355,123 @@ const ContactMe = () => {
                   </motion.button>
                 </div>
               </form>
+
+              {/* ML inference pipeline overlay — shows while sending */}
+              <AnimatePresence>
+                {status === 'sending' && (
+                  <motion.div
+                    key="sending-overlay"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="absolute inset-0 z-20 bg-white/95 backdrop-blur-[2px] flex items-center justify-center"
+                  >
+                    {/* dot grid bg */}
+                    <div
+                      className="absolute inset-0 opacity-[0.18] pointer-events-none"
+                      style={{
+                        backgroundImage:
+                          'radial-gradient(circle at 1px 1px, rgba(61,57,41,0.35) 1px, transparent 0)',
+                        backgroundSize: '14px 14px',
+                      }}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.05 }}
+                      className="relative font-mono w-full max-w-sm px-6 py-5"
+                    >
+                      {/* header */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2 text-[9px] uppercase tracking-[0.22em] text-primary">
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
+                          </span>
+                          <span>running inference · v1.0</span>
+                        </div>
+                        <span className="text-[9px] uppercase tracking-[0.18em] text-muted/50">
+                          gpu/0
+                        </span>
+                      </div>
+
+                      {/* pipeline */}
+                      <div className="space-y-1.5">
+                        {PIPELINE_STEPS.map((step, i) => {
+                          const done = i < stepIndex
+                          const active = i === stepIndex
+                          return (
+                            <motion.div
+                              key={step}
+                              initial={{ opacity: 0, x: -6 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.08, duration: 0.3 }}
+                              className="flex items-center gap-2 text-[11px]"
+                            >
+                              <span
+                                className={`w-3 inline-flex items-center justify-center shrink-0 ${
+                                  done ? 'text-primary' : active ? 'text-ink' : 'text-muted/30'
+                                }`}
+                              >
+                                {done ? '✓' : active ? SPINNER_FRAMES[spinnerFrame] : '○'}
+                              </span>
+                              <span
+                                className={
+                                  done
+                                    ? 'text-ink/70'
+                                    : active
+                                    ? 'text-ink'
+                                    : 'text-muted/40'
+                                }
+                              >
+                                {step}
+                              </span>
+                              <span className="flex-1 border-b border-dotted border-border/70" />
+                              <span
+                                className={`text-[9px] uppercase tracking-[0.18em] tabular-nums shrink-0 ${
+                                  done
+                                    ? 'text-primary'
+                                    : active
+                                    ? 'text-ink/60'
+                                    : 'text-muted/30'
+                                }`}
+                              >
+                                {done ? 'ok' : active ? 'run' : 'queue'}
+                              </span>
+                            </motion.div>
+                          )
+                        })}
+                      </div>
+
+                      {/* progress */}
+                      <div className="mt-4 h-[3px] bg-border/60 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-primary/70 to-primary"
+                          initial={{ width: '0%' }}
+                          animate={{
+                            width: `${Math.min(
+                              100,
+                              ((stepIndex + 1) / PIPELINE_STEPS.length) * 100
+                            )}%`,
+                          }}
+                          transition={{ duration: 0.5, ease: 'easeOut' }}
+                        />
+                      </div>
+
+                      {/* footer */}
+                      <div className="mt-2 flex items-center justify-between text-[9px] uppercase tracking-[0.22em] text-muted/50 tabular-nums">
+                        <span>
+                          step {Math.min(stepIndex + 1, PIPELINE_STEPS.length)}/
+                          {PIPELINE_STEPS.length}
+                        </span>
+                        <span>relaying via web3forms</span>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              </div>
             </div>
           </div>
 
