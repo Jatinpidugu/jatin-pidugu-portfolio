@@ -42,31 +42,65 @@ const SkillCard = ({
     >
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-3 md:gap-4 px-4 md:px-6 py-3.5 md:py-4 text-left"
+        className="w-full px-4 md:px-6 py-3.5 md:py-4 text-left"
       >
-        {/* index */}
-        <span className="text-[10px] font-mono text-muted/50 tabular-nums w-7 shrink-0">/{idx}</span>
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* index */}
+          <span className="text-[10px] font-mono text-muted/50 tabular-nums w-7 shrink-0">/{idx}</span>
 
-        {/* icon */}
-        <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-gradient-warm rounded-lg text-white shadow-sm">
-          {Icon ? <Icon className="w-4 h-4" /> : <span className="text-[11px] font-bold">{skillName?.[0]}</span>}
+          {/* icon */}
+          <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-gradient-warm rounded-lg text-white shadow-sm">
+            {Icon ? <Icon className="w-4 h-4" /> : <span className="text-[11px] font-bold">{skillName?.[0]}</span>}
+          </div>
+
+          {/* name — flexes on mobile, fixed width on desktop */}
+          <span className="font-serif text-[15px] md:text-base text-ink truncate flex-1 md:flex-none md:w-[24%] min-w-0">
+            {skillName}
+          </span>
+
+          {/* category — desktop only */}
+          <span className="hidden md:flex items-center gap-2 w-[16%] shrink-0">
+            <span className={`w-1.5 h-1.5 rounded-full ${getCategoryDot(type)}`} />
+            <span className="text-[10px] uppercase tracking-[0.18em] text-muted/70 font-mono truncate">
+              {getCategoryLabel(type)}
+            </span>
+          </span>
+
+          {/* proficiency bar — desktop only (mobile shows it on row 2 below) */}
+          <div className="hidden md:block flex-1 relative h-[6px] bg-border/60 rounded-full overflow-hidden min-w-[60px]">
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: `${progress}%` }}
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: index * 0.04 }}
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary/70 to-primary rounded-full"
+            />
+            {[25, 50, 75].map((t) => (
+              <span
+                key={t}
+                className="absolute top-0 bottom-0 w-px bg-white/60"
+                style={{ left: `${t}%` }}
+              />
+            ))}
+          </div>
+
+          {/* % */}
+          <span className="text-[11px] md:text-xs font-mono text-primary tabular-nums w-9 text-right shrink-0">
+            {progress}%
+          </span>
+
+          {/* chevron */}
+          <span
+            className={`text-muted/50 group-hover:text-ink transition-transform duration-300 w-4 text-center shrink-0 text-xs ${
+              expanded ? 'rotate-180' : ''
+            }`}
+          >
+            ⌄
+          </span>
         </div>
 
-        {/* name */}
-        <span className="font-serif text-[15px] md:text-base text-ink truncate w-[34%] md:w-[24%] shrink-0">
-          {skillName}
-        </span>
-
-        {/* category */}
-        <span className="hidden md:flex items-center gap-2 w-[16%] shrink-0">
-          <span className={`w-1.5 h-1.5 rounded-full ${getCategoryDot(type)}`} />
-          <span className="text-[10px] uppercase tracking-[0.18em] text-muted/70 font-mono truncate">
-            {getCategoryLabel(type)}
-          </span>
-        </span>
-
-        {/* proficiency bar */}
-        <div className="flex-1 relative h-[6px] bg-border/60 rounded-full overflow-hidden min-w-[60px]">
+        {/* mobile-only proficiency bar — second row, indented to align with name */}
+        <div className="md:hidden mt-2.5 ml-[68px] relative h-[6px] bg-border/60 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             whileInView={{ width: `${progress}%` }}
@@ -74,7 +108,6 @@ const SkillCard = ({
             transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: index * 0.04 }}
             className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary/70 to-primary rounded-full"
           />
-          {/* tick marks */}
           {[25, 50, 75].map((t) => (
             <span
               key={t}
@@ -83,20 +116,6 @@ const SkillCard = ({
             />
           ))}
         </div>
-
-        {/* % */}
-        <span className="text-[11px] md:text-xs font-mono text-primary tabular-nums w-9 text-right shrink-0">
-          {progress}%
-        </span>
-
-        {/* chevron */}
-        <span
-          className={`text-muted/50 group-hover:text-ink transition-transform duration-300 w-4 text-center shrink-0 text-xs ${
-            expanded ? 'rotate-180' : ''
-          }`}
-        >
-          ⌄
-        </span>
       </button>
 
       {/* expanded description */}
